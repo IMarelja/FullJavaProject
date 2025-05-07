@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Movie {
     
-    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
     
     private int id;
     private String title;
@@ -31,17 +31,21 @@ public class Movie {
     
     public Movie(){
     }
-
-    public Movie(String title, String picturePath, String description, LocalDateTime releaseDate,
-                 List<Director> directors, List<Actor> actors, List<Genre> genres) {
+    
+    public Movie(int id, String title, String picturePath, String description, LocalDateTime releaseDate) {
+        this.id = id;
+        this.title = title;
+        this.picturePath = picturePath;
+        this.description = description;
+        this.releaseDate = releaseDate;
+    }
+    
+    public Movie(String title, String picturePath, String description, LocalDateTime releaseDate) {
 
         this.title = title;
         this.picturePath = picturePath;
         this.description = description;
         this.releaseDate = releaseDate;
-        this.directors = directors;
-        this.actors = actors;
-        this.genres = genres;
     }
     
     public Movie(int id, String title, String picturePath, String description, LocalDateTime releaseDate,
@@ -54,6 +58,24 @@ public class Movie {
         this.directors = directors;
         this.actors = actors;
         this.genres = genres;
+    }
+    
+        public Movie(String title, String picturePath, String description, LocalDateTime releaseDate,
+                 List<Director> directors, List<Actor> actors, List<Genre> genres) {
+
+        this.title = title;
+        this.picturePath = picturePath;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.directors = directors;
+        this.actors = actors;
+        this.genres = genres;
+    }
+    
+    public Movie(List<Director> directors, List<Actor> actors, List<Genre> genres){
+        this.directors = directors;
+        this.actors = actors;
+        this.genres = genres;        
     }
     
 

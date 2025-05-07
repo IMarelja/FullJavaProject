@@ -14,40 +14,40 @@ import java.util.Optional;
  */
 public interface Repository {
    
-   Administrator createAdministrator(Administrator administrator) throws Exception;
+   int createAdministrator(Administrator administrator) throws Exception;
    Optional<Administrator> readAdministrator(int id) throws Exception;
    List<Administrator> readAdministrators() throws Exception;
-   void updateAdministrator(Administrator administrator) throws Exception;
+   void updateAdministrator(int id,Administrator administrator) throws Exception;
    void deleteAdministrator(int id) throws Exception;
    
-   User createUser(User user) throws Exception;
+   int createUser(User user) throws Exception;
    Optional<User> readUser(int id) throws Exception;
    List<User> readUsers() throws Exception;
-   void updateUser(User user) throws Exception;
+   void updateUser(int id,User user) throws Exception;
    void deleteUser(int id) throws Exception;
    
-   Actor createActor(Actor actor) throws Exception;
+   int createActor(Actor actor) throws Exception;
    Optional<Actor> readActor(int id) throws Exception;
    List<Actor> readActors() throws Exception;
-   void updateActor(Actor actor) throws Exception;
+   void updateActor(int id,Actor actor) throws Exception;
    void deleteActor(int id) throws Exception;
    
-   Director createDirector(Director director) throws Exception;
+   int createDirector(Director director) throws Exception;
    Optional<Director> readDirector(int id) throws Exception;
    List<Director> readDirectors() throws Exception;
-   void updateDirector(Director director) throws Exception;
+   void updateDirector(int id,Director director) throws Exception;
    void deleteDirector(int id) throws Exception;
    
-   Genre createGenre(Genre genre) throws Exception;
+   int createGenre(Genre genre) throws Exception;
    Optional<Genre> readGenre(int id) throws Exception;
    List<Genre> readGenres() throws Exception;
-   void updateGenre(Genre genre) throws Exception;
+   void updateGenre(int id,Genre genre) throws Exception;
    void deleteGenre(int id) throws Exception;
    
-   Movie createMovie(Movie movie) throws Exception;
+   int createMovie(Movie movie) throws Exception;
    Optional<Movie> readMovie(int id) throws Exception;
    List<Movie> readMovies() throws Exception;
-   void updateMovie(Movie movie) throws Exception;
+   void updateMovie(int id,Movie movie) throws Exception;
    void deleteMovie(int id) throws Exception;
    
    void createActorFromMovie(int movieId, int actorId) throws Exception;

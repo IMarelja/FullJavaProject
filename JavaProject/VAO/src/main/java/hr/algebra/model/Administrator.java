@@ -20,6 +20,13 @@ public class Administrator {
         this.username = username;
         this.password = password;
     }
+    
+    public Administrator(int id, String username) {
+        this.id = id;
+        this.username = username;
+        this.password = null;
+        
+    }
 
     public Administrator(String username, String password) {
         this.username = username;

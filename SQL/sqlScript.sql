@@ -518,7 +518,7 @@ END
 GO
 
 -- Read Movies for a Director
-CREATE PROCEDURE ReadMovieFromDirector
+CREATE PROCEDURE ReadMoviesFromDirector
     @DirectorID INT
 AS
 BEGIN
@@ -556,7 +556,7 @@ END
 GO
 
 -- Read Genres for a Movie
-CREATE PROCEDURE SelectGenresFromMovie
+CREATE PROCEDURE ReadGenresFromMovie
     @MovieID INT
 AS
 BEGIN
@@ -568,7 +568,7 @@ END
 GO
 
 -- Read Movies for a Genre
-CREATE PROCEDURE SelectMoviesFromGenre
+CREATE PROCEDURE ReadMoviesFromGenre
     @GenreID INT
 AS
 BEGIN
