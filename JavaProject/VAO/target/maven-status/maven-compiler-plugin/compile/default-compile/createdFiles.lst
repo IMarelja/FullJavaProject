@@ -6,4 +6,5 @@ hr\algebra\model\User.class
 hr\algebra\dal\Repository.class
 hr\algebra\model\Genre.class
 hr\algebra\model\Director.class
+hr\algebra\dal\sql\DataSourceSingleton.class
 hr\algebra\dal\sql\SqlRepo.class

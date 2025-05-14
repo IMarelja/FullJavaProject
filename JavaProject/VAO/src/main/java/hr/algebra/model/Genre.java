@@ -8,7 +8,7 @@ package hr.algebra.model;
  *
  * @author windsten
  */
-public class Genre {
+public final class Genre {
     private int id;
     private String name;
 

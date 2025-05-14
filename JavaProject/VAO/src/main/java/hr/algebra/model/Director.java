@@ -8,7 +8,7 @@ package hr.algebra.model;
  *
  * @author windsten
  */
-public class Director {
+public final class Director {
     private int id;
     private String firstName;
     private String lastName;

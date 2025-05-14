@@ -8,7 +8,7 @@ package hr.algebra.model;
  *
  * @author windsten
  */
-public class Administrator {
+public final class Administrator {
     private int id;
     private String username;
     private String password;

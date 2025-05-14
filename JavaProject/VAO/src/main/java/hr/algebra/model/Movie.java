@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author windsten
  */
-public class Movie {
+public final class Movie {
     
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
     

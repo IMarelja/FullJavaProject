@@ -8,7 +8,7 @@ package hr.algebra.model;
  *
  * @author windsten
  */
-public class Actor {
+public final class Actor {
     private int id;
     private String firstName;
     private String lastName;
