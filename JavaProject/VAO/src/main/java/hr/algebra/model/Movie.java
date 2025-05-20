@@ -4,10 +4,14 @@
  */
 package hr.algebra.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalDate;
+import java.time.LocalDate;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.text.DateFormatter;
 
 /**
  *
@@ -21,7 +25,7 @@ public final class Movie {
     private String title;
     private String picturePath;
     private String description;
-    private LocalDateTime releaseDate;
+    private LocalDate releaseDate;
     
     
     private List<Director> directors = new ArrayList<>();
@@ -32,15 +36,7 @@ public final class Movie {
     public Movie(){
     }
     
-    public Movie(int id, String title, String picturePath, String description, LocalDateTime releaseDate) {
-        this.id = id;
-        this.title = title;
-        this.picturePath = picturePath;
-        this.description = description;
-        this.releaseDate = releaseDate;
-    }
-    
-    public Movie(String title, String picturePath, String description, LocalDateTime releaseDate) {
+    public Movie(String title, String picturePath, String description, LocalDate releaseDate) {
 
         this.title = title;
         this.picturePath = picturePath;
@@ -48,7 +44,17 @@ public final class Movie {
         this.releaseDate = releaseDate;
     }
     
-    public Movie(int id, String title, String picturePath, String description, LocalDateTime releaseDate,
+    
+    public Movie(int id, String title, String picturePath, String description, LocalDate releaseDate) {
+        this.id = id;
+        this.title = title;
+        this.picturePath = picturePath;
+        this.description = description;
+        this.releaseDate = releaseDate;
+    }
+    
+    
+    public Movie(int id, String title, String picturePath, String description, LocalDate releaseDate,
                  List<Director> directors, List<Actor> actors, List<Genre> genres) {
         this.id = id;
         this.title = title;
@@ -60,7 +66,7 @@ public final class Movie {
         this.genres = genres;
     }
     
-        public Movie(String title, String picturePath, String description, LocalDateTime releaseDate,
+        public Movie(String title, String picturePath, String description, LocalDate releaseDate,
                  List<Director> directors, List<Actor> actors, List<Genre> genres) {
 
         this.title = title;
@@ -111,11 +117,11 @@ public final class Movie {
         this.description = description;
     }
 
-    public LocalDateTime getPublishedDate() {
+    public LocalDate getPublishedDate() {
         return releaseDate;
     }
 
-    public void setPublishedDate(LocalDateTime releaseDate) {
+    public void setPublishedDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
 

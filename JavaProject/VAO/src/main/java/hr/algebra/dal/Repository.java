@@ -13,19 +13,8 @@ import java.util.Optional;
  * @author windsten
  */
 public interface Repository {
-   
-   int createAdministrator(Administrator administrator) throws Exception;
-   Optional<Administrator> readAdministrator(int id) throws Exception;
-   List<Administrator> readAdministrators() throws Exception;
-   void updateAdministrator(int id,Administrator administrator) throws Exception;
-   void deleteAdministrator(int id) throws Exception;
-   
-   int createUser(User user) throws Exception;
-   Optional<User> readUser(int id) throws Exception;
-   List<User> readUsers() throws Exception;
-   void updateUser(int id,User user) throws Exception;
-   void deleteUser(int id) throws Exception;
-   
+  
+
    int createActor(Actor actor) throws Exception;
    Optional<Actor> readActor(int id) throws Exception;
    List<Actor> readActors() throws Exception;
@@ -64,11 +53,9 @@ public interface Repository {
    List<Genre> selectGenresFromMovie(int movieId) throws Exception;
    List<Movie> selectMoviesFromGenre(int genreId) throws Exception;
    void removeGenreFromMovie(int movieId, int genreId) throws Exception;
-   /*
-   Movie createCompleteMovie(Movie movie) throws Exception;
-   void updateCompleteMovie(Movie movie) throws Exception;
-   Optional<Movie> readCompleteMovie(int id) throws Exception;
-   */
-   Optional<User> authenticateUser(String username, String password) throws Exception;
-   Optional<Administrator> authenticateAdministrator(String username, String password) throws Exception;
+
+   Optional<User> getUserByUsername(String username) throws Exception;
+   int createUser(User user) throws Exception;
+   
+   void DeleteAllDataExceptUsers() throws Exception;
 }

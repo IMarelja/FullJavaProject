@@ -3,18 +3,21 @@ GO
 USE VIDEORENTAL
 GO
 
--- Create Administrator table
-CREATE TABLE Administrator (
+
+-- Create Roles table
+CREATE TABLE Roles (
     ID INT PRIMARY KEY IDENTITY,
-    Username NVARCHAR(100) NOT NULL,
-    Password NVARCHAR(255) NOT NULL
+    RoleName NVARCHAR(20) UNIQUE NOT NULL
 );
+
+INSERT INTO Roles (RoleName) VALUES ('Admin'), ('User');
 
 -- Create User table
 CREATE TABLE [User] (
     ID INT PRIMARY KEY IDENTITY,
-    Username NVARCHAR(100) NOT NULL,
-    Password NVARCHAR(255) NOT NULL
+    Username NVARCHAR(100) UNIQUE NOT NULL,
+    Password NVARCHAR(255) NOT NULL,
+    RoleID INT FOREIGN KEY REFERENCES Roles(ID)
 );
 
 -- Create Actor table
@@ -70,128 +73,44 @@ CREATE TABLE Movie_Genre (
     FOREIGN KEY (MovieID) REFERENCES Movie(ID) ON DELETE CASCADE,
     FOREIGN KEY (GenreID) REFERENCES Genre(ID) ON DELETE CASCADE
 );
-
--- ============================
--- Administrator CRUD procedures
--- ============================
-
--- Create Administrator
-CREATE PROCEDURE CreateAdministrator
-    @Username NVARCHAR(100),
-    @Password NVARCHAR(255),
-    @ID INT OUTPUT
-AS
-BEGIN
-    INSERT INTO Administrator (Username, Password)
-    VALUES (@Username, @Password);
-    
-    SET @ID = SCOPE_IDENTITY();
-END
-GO
-
--- Read Administrator
-CREATE PROCEDURE ReadAdministrator
-    @ID INT
-AS
-BEGIN
-    SELECT ID, Username, Password
-    FROM Administrator
-    WHERE ID = @ID;
-END
-GO
-
-CREATE PROCEDURE ReadAdministrators
-AS
-BEGIN
-    SELECT ID, Username, Password
-    FROM Administrator;
-END
-GO
-
--- Update Administrator
-CREATE PROCEDURE UpdateAdministrator
-    @ID INT,
-    @Username NVARCHAR(100),
-    @Password NVARCHAR(255)
-AS
-BEGIN
-    UPDATE Administrator
-    SET Username = @Username,
-        Password = @Password
-    WHERE ID = @ID;
-END
-GO
-
--- Delete Administrator
-CREATE PROCEDURE DeleteAdministrator
-    @ID INT
-AS
-BEGIN
-    DELETE FROM Administrator
-    WHERE ID = @ID;
-END
 GO
 
 -- ============================
--- User CRUD procedures
+-- User Login/Register procedures
 -- ============================
+
+-- Get User
+CREATE PROCEDURE GetUserByUsername
+    @Username NVARCHAR(50)
+AS
+BEGIN
+    SELECT Usery.ID, Usery.Username, Usery.Password, Usery.RoleID
+    FROM [User] Usery
+    WHERE Usery.Username = @Username
+END
+GO
 
 -- Create User
 CREATE PROCEDURE CreateUser
     @Username NVARCHAR(100),
     @Password NVARCHAR(255),
+    @RoleName NVARCHAR(20), 
     @ID INT OUTPUT
 AS
 BEGIN
-    INSERT INTO [User] (Username, Password)
-    VALUES (@Username, @Password);
-    
-    SET @ID = SCOPE_IDENTITY();
+    DECLARE @RoleID INT;
+    SELECT @RoleID = ID FROM Roles WHERE RoleName = @RoleName;
+    IF @RoleID IS NULL
+    BEGIN
+        RAISERROR('Invalid RoleName', 16, 1);
+        RETURN;
+    END
+    EXEC CreateUser @Username, @Password, @RoleID, @ID;
 END
 GO
 
--- Read User
-CREATE PROCEDURE ReadUser
-    @ID INT
-AS
-BEGIN
-    SELECT ID, Username, Password
-    FROM [User]
-    WHERE ID = @ID;
-END
-GO
 
-CREATE PROCEDURE ReadUsers
-AS
-BEGIN
-    SELECT ID, Username, Password
-    FROM [User];
-END
-GO
 
--- Update User
-CREATE PROCEDURE UpdateUser
-    @ID INT,
-    @Username NVARCHAR(100),
-    @Password NVARCHAR(255)
-AS
-BEGIN
-    UPDATE [User]
-    SET Username = @Username,
-        Password = @Password
-    WHERE ID = @ID;
-END
-GO
-
--- Delete User
-CREATE PROCEDURE DeleteUser
-    @ID INT
-AS
-BEGIN
-    DELETE FROM [User]
-    WHERE ID = @ID;
-END
-GO
 
 -- ============================
 -- Actor CRUD procedures
@@ -222,6 +141,7 @@ BEGIN
 END
 GO
 
+-- Read Actors
 CREATE PROCEDURE ReadActors
 AS
 BEGIN
@@ -591,27 +511,19 @@ END
 GO
 
 -- ============================
--- Authenticatition
+-- Wipe Database data
 -- ============================
 
-CREATE PROCEDURE AuthenticateUser
-    @Username NVARCHAR(100),
-    @Password NVARCHAR(255)
+CREATE PROCEDURE DeleteAllDataExceptUsers
 AS
 BEGIN
-    SELECT ID, Username, Password
-    FROM [User]
-    WHERE Username = @Username AND Password = @Password;
-END
-GO
+    DELETE FROM Movie_Actor;
+    DELETE FROM Movie_Director;
+    DELETE FROM Movie_Genre;
 
-CREATE PROCEDURE AuthenticateAdministrator
-    @Username NVARCHAR(100),
-    @Password NVARCHAR(255)
-AS
-BEGIN
-    SELECT ID, Username, Password
-    FROM Administrator
-    WHERE Username = @Username AND Password = @Password;
+    DELETE FROM Movie;
+    DELETE FROM Actor;
+    DELETE FROM Director;
+    DELETE FROM Genre;
 END
 GO

@@ -6,7 +6,6 @@ package hr.algebra.dal.sql;
 
 import hr.algebra.dal.Repository;
 import hr.algebra.model.Actor;
-import hr.algebra.model.Administrator;
 import hr.algebra.model.Director;
 import hr.algebra.model.Genre;
 import hr.algebra.model.Movie;
@@ -18,7 +17,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -27,219 +26,7 @@ import java.util.ArrayList;
  */
 public class SqlRepo implements Repository{
 
-    // Admin
     
-    private static final String IDADMIN = "ID";
-    private static final String USERNAMEADMIN = "Username";
-    private static final String PASSWORDADMIN = "Password";
-
-    private static final String CREATE_ADMIN = "{ CALL CreateAdministrator (?,?,?) }";
-    private static final String UPDATE_ADMIN = "{ CALL UpdateAdministrator (?,?,?) }";
-    private static final String DELETE_ADMIN = "{ CALL DeleteAdministrator (?) }";
-    private static final String SELECT_ADMIN = "{ CALL ReadAdministrator (?) }";
-    private static final String SELECT_ADMINS = "{ CALL ReadAdministrators }";
-    
-    @Override
-    public int createAdministrator(Administrator administrator) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_ADMIN)) {
-            stmt.setString(USERNAMEADMIN, administrator.getUsername());
-            stmt.setString(PASSWORDADMIN, administrator.getPassword());
-
-            stmt.registerOutParameter(IDADMIN, Types.INTEGER);
-
-            stmt.executeUpdate();
-            return stmt.getInt(IDADMIN);
-
-        }
-    }
-
-    @Override
-    public Optional<Administrator> readAdministrator(int id) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(SELECT_ADMIN)) {
-           
-            stmt.setInt(IDADMIN, id);
-            try(ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(
-                            new Administrator(
-                                    rs.getInt(IDADMIN), 
-                                    rs.getString(USERNAMEADMIN) 
-                                    
-                                )
-                    );
-                }
-            }
-            
-
-        }    
-        
-        return Optional.empty();
-    }
-
-    @Override
-    public List<Administrator> readAdministrators() throws Exception {
-        List<Administrator> admins = new ArrayList<>();
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(SELECT_ADMINS)) {
-           
-            
-            try(ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    admins.add(
-                            new Administrator(
-                                    rs.getInt(IDADMIN),
-                                    rs.getString(USERNAMEADMIN)
-                            )
-                    );
-                }
-            }
-            
-        }    
-        
-        
-        return admins;
-    }
-
-    @Override
-    public void updateAdministrator(int id,Administrator administrator) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(UPDATE_ADMIN)) {
-            stmt.setString(USERNAMEADMIN, administrator.getUsername());
-            stmt.setString(PASSWORDADMIN, administrator.getPassword());
-
-
-            stmt.setInt(IDADMIN, id);
-
-            stmt.executeUpdate();
-           
-
-        } 
-    }
-
-    @Override
-    public void deleteAdministrator(int id) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(DELETE_ADMIN)) {
-           
-            stmt.setInt(IDADMIN, id);
-
-            stmt.executeUpdate();
-
-        }  
-    }
-
-    private static final String IDUSER = "ID";
-    private static final String USERNAMEUSER = "Username";
-    private static final String PASSWORDUSER = "Password";
-
-    private static final String CREATE_USER = "{ CALL CreateUser (?,?,?) }";
-    private static final String UPDATE_USER = "{ CALL UpdateUser (?,?,?) }";
-    private static final String DELETE_USER = "{ CALL DeleteUser (?) }";
-    private static final String SELECT_USER = "{ CALL ReadUser (?) }";
-    private static final String SELECT_USERS = "{ CALL ReadUsers }";
-    
-    // User
-    @Override
-    public int createUser(User user) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_USER)) {
-            stmt.setString(USERNAMEUSER, user.getUsername());
-            stmt.setString(PASSWORDUSER, user.getPassword());
-
-            stmt.registerOutParameter(IDUSER, Types.INTEGER);
-
-            stmt.executeUpdate();
-            return stmt.getInt(IDUSER);
-
-        }
-    }
-
-    @Override
-    public Optional<User> readUser(int id) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(SELECT_USER)) {
-           
-            stmt.setInt(IDUSER, id);
-            try(ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(
-                            new User(
-                                    rs.getInt(IDUSER), 
-                                    rs.getString(USERNAMEUSER) 
-                                    
-                                )
-                    );
-                }
-            }
-            
-
-        }    
-        
-        return Optional.empty();
-    }
-
-    @Override
-    public List<User> readUsers() throws Exception {
-        List<User> users = new ArrayList<>();
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(SELECT_USERS)) {
-           
-            
-            try(ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    users.add(
-                            new User(
-                                    rs.getInt(IDUSER),
-                                    rs.getString(USERNAMEUSER)
-                            )
-                    );
-                }
-            }
-            
-        }    
-        
-        
-        return users;
-    }
-
-    @Override
-    public void updateUser(int id,User user) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(UPDATE_USER)) {
-            stmt.setString(USERNAMEUSER, user.getUsername());
-            stmt.setString(PASSWORDUSER, user.getPassword());
-
-
-            stmt.setInt(IDUSER, id);
-
-            stmt.executeUpdate();
-           
-
-        } 
-    }
-
-    @Override
-    public void deleteUser(int id) throws Exception {
-        DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(DELETE_USER)) {
-           
-            stmt.setInt(IDUSER, id);
-
-            stmt.executeUpdate();
-
-        }  
-    }
-
     //Actor
     
     private static final String IDACTOR = "ID";
@@ -351,11 +138,11 @@ public class SqlRepo implements Repository{
     private static final String FIRSTNAMEDIRECTOR = "FirstName";
     private static final String LASTNAMEDIRECTOR = "LastName";
 
-    private static final String CREATE_DIRECTOR = "{ CALL CreateActor (?,?,?) }";
-    private static final String UPDATE_DIRECTOR = "{ CALL UpdateActor (?,?,?) }";
-    private static final String DELETE_DIRECTOR = "{ CALL DeleteActor (?) }";
-    private static final String SELECT_DIRECTOR = "{ CALL ReadActor (?) }";
-    private static final String SELECT_DIRECTORS = "{ CALL ReadActors }";
+    private static final String CREATE_DIRECTOR = "{ CALL CreateDirector (?,?,?) }";
+    private static final String UPDATE_DIRECTOR = "{ CALL UpdateDirector (?,?,?) }";
+    private static final String DELETE_DIRECTOR = "{ CALL DeleteDirector (?) }";
+    private static final String SELECT_DIRECTOR = "{ CALL ReadDirector (?) }";
+    private static final String SELECT_DIRECTORS = "{ CALL ReadDirectors }";
     
     //Director
     @Override
@@ -457,10 +244,10 @@ public class SqlRepo implements Repository{
     private static final String NAMEGENRE = "Name";
 
     private static final String CREATE_GENRE = "{ CALL CreateGenre (?,?) }";
-    private static final String UPDATE_GENRE = "{ CALL UpdateActor (?,?) }";
-    private static final String DELETE_GENRE = "{ CALL DeleteActor (?) }";
-    private static final String SELECT_GENRE = "{ CALL ReadActor (?) }";
-    private static final String SELECT_GENRES = "{ CALL ReadActors }";
+    private static final String UPDATE_GENRE = "{ CALL UpdateGenre (?,?) }";
+    private static final String DELETE_GENRE = "{ CALL DeleteGenre (?) }";
+    private static final String SELECT_GENRE = "{ CALL ReadGenre (?) }";
+    private static final String SELECT_GENRES = "{ CALL ReadGenres }";
     
     //Genre
     @Override
@@ -565,8 +352,8 @@ public class SqlRepo implements Repository{
     private static final String CREATE_MOVIE = "{ CALL CreateMovie (?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL UpdateMovie (?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL DeleteMovie (?) }";
-    private static final String SELECT_MOVIE = "{ CALL SelectMovie (?) }";
-    private static final String SELECT_MOVIES = "{ CALL SelectMovies }";
+    private static final String SELECT_MOVIE = "{ CALL ReadMovie (?) }";
+    private static final String SELECT_MOVIES = "{ CALL ReadMovies }";
     
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -602,7 +389,7 @@ public class SqlRepo implements Repository{
                         rs.getString(TITLE),
                         rs.getString(PICTURE_PATH),
                         rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
+                        LocalDate.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
                     );
                     return Optional.of(movie);
                 }
@@ -625,7 +412,7 @@ public class SqlRepo implements Repository{
                     rs.getString(TITLE),
                     rs.getString(PICTURE_PATH),
                     rs.getString(DESCRIPTION),
-                    LocalDateTime.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
+                    LocalDate.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
                 );
                 movies.add(movie);
             }
@@ -721,7 +508,7 @@ public class SqlRepo implements Repository{
                         rs.getString(TITLE),
                         rs.getString(PICTURE_PATH),
                         rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
+                        LocalDate.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
                     );
                     movies.add(movie);
                 }
@@ -801,7 +588,7 @@ public class SqlRepo implements Repository{
                         rs.getString(TITLE),
                         rs.getString(PICTURE_PATH),
                         rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
+                        LocalDate.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
                     );
                     movies.add(movie);
                 }
@@ -881,7 +668,7 @@ public class SqlRepo implements Repository{
                         rs.getString(TITLE),
                         rs.getString(PICTURE_PATH),
                         rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
+                        LocalDate.parse(rs.getString(RELEASE_DATE), Movie.DATE_FORMATTER)
                     );
                     movies.add(movie);
                 }
@@ -902,32 +689,72 @@ public class SqlRepo implements Repository{
             stmt.executeUpdate();
         }
     }
-/*
-    @Override
-    public Movie createCompleteMovie(Movie movie) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
+    // User authentication
+    
+    private static final String IDUSER = "ID";
+    private static final String USERNAMEUSER = "Username";
+    private static final String PASSWORDUSER = "Password";
+    private static final String ROLENAMEUSER = "RoleName";
 
-    @Override
-    public void updateCompleteMovie(Movie movie) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    private static final String GETUSERBYUSERNAME = "{CALL GetUserByUsername(?)}";
+    private static final String CREATEUSER = "{CALL CreateUser(?, ?, ?, ?)}";
+    
+    public Optional<User> getUserByUsername(String username) throws Exception{
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); 
+                CallableStatement stmt = con.prepareCall(GETUSERBYUSERNAME)) {
+           
+            stmt.setString(USERNAMEUSER, username);
+            try(ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(
+                            new User(
+                                    rs.getInt(IDUSER), 
+                                    rs.getString(USERNAMEUSER), 
+                                    rs.getString(PASSWORDUSER),
+                                    rs.getString(ROLENAMEUSER)
+                                )
+                    );
+                }
+            }
+            
 
-    @Override
-    public Optional<Movie> readCompleteMovie(int id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        }    
+        
+        return Optional.empty();
     }
-*/
-    @Override
-    public Optional<User> authenticateUser(String username, String password) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 
-    @Override
-    public Optional<Administrator> authenticateAdministrator(String username, String password) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    public int createUser(User user) throws Exception{
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+             CallableStatement stmt = con.prepareCall(CREATEUSER)) {
 
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getPasswordHash());
+            stmt.setString(3, user.getRoleName());
+            stmt.registerOutParameter(4, java.sql.Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt(4);
+        }
+        
+    }
+    
+    private static final String DELETEALLDATAEXCEPTUSERS = "{CALL DeleteAllDataExceptUsers()}";
+
+    public void DeleteAllDataExceptUsers() throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+             CallableStatement stmt = con.prepareCall(DELETEALLDATAEXCEPTUSERS)) {
+
+            stmt.executeUpdate();
+        }
+    }
+    
+
+    
     
     
 }

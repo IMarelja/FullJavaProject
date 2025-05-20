@@ -1,7 +1,6 @@
 hr\algebra\model\Movie.class
 hr\algebra\dal\RepoFactory.class
 hr\algebra\model\Actor.class
-hr\algebra\model\Administrator.class
 hr\algebra\model\User.class
 hr\algebra\dal\Repository.class
 hr\algebra\model\Genre.class
