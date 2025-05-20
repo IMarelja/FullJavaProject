@@ -206,26 +206,66 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
         });
 
         btnUpdateActor.setText("Update");
+        btnUpdateActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActorActionPerformed(evt);
+            }
+        });
 
         btnDeleteActor.setBackground(new java.awt.Color(255, 0, 0));
         btnDeleteActor.setForeground(new java.awt.Color(255, 255, 255));
         btnDeleteActor.setText("Delete");
+        btnDeleteActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActorActionPerformed(evt);
+            }
+        });
 
         btnUpdateGenre.setText("Update");
+        btnUpdateGenre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateGenreActionPerformed(evt);
+            }
+        });
 
         btnDeleteGenre.setBackground(new java.awt.Color(255, 0, 0));
         btnDeleteGenre.setForeground(new java.awt.Color(255, 255, 255));
         btnDeleteGenre.setText("Delete");
+        btnDeleteGenre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteGenreActionPerformed(evt);
+            }
+        });
 
         btnAddGenre.setText("Add");
+        btnAddGenre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddGenreActionPerformed(evt);
+            }
+        });
 
         btnUpdateDirector.setText("Update");
+        btnUpdateDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateDirectorActionPerformed(evt);
+            }
+        });
 
         btnDeleteDirector.setBackground(new java.awt.Color(255, 0, 0));
         btnDeleteDirector.setForeground(new java.awt.Color(255, 255, 255));
         btnDeleteDirector.setText("Delete");
+        btnDeleteDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteDirectorActionPerformed(evt);
+            }
+        });
 
         btnAddDirector.setText("Add");
+        btnAddDirector.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDirectorActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -414,6 +454,179 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
     private void tbDirectorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbDirectorMouseClicked
         selectDirector();
     }//GEN-LAST:event_tbDirectorMouseClicked
+
+    private void btnAddGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddGenreActionPerformed
+        if (!formActorValid()) {
+            return;
+        }
+        try {
+
+            Genre genre = new Genre(
+                tfNameGenre.getText().trim()
+            );
+            
+            repository.createGenre(genre);
+
+            GenreModel.setGenres(repository.readGenres());
+
+            clearGenreForm();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAddGenreActionPerformed
+
+    private void btnAddDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectorActionPerformed
+        if (!formActorValid()) {
+            return;
+        }
+        try {
+
+            Director director = new Director(
+                tfFirstNameDirector.getText().trim(),
+                tfLastNameDirector.getText().trim()
+            );
+            
+            repository.createDirector(director);
+
+            DirectorModel.setDirectors(repository.readDirectors());
+
+            clearDirectorForm();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAddDirectorActionPerformed
+
+    private void btnUpdateActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActorActionPerformed
+        if (selectedActor == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+        if (!formActorValid()) {
+            return;
+        }
+        try {
+
+            selectedActor.setFirstName(tfFirstNameActor.getText().trim());
+            selectedActor.setLastName(tfLastNameActor.getText().trim());
+
+            repository.updateActor(selectedActor.getId(), selectedActor);
+
+            ActorModel.setActors(repository.readActors());
+
+            clearActorForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnUpdateActorActionPerformed
+
+    private void btnDeleteActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActorActionPerformed
+        if (selectedActor == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+
+        try {
+
+            repository.deleteActor(selectedActor.getId());
+
+            ActorModel.setActors(repository.readActors());
+
+            clearActorForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnDeleteActorActionPerformed
+
+    private void btnUpdateGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateGenreActionPerformed
+        if (selectedGenre == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+        if (!formActorValid()) {
+            return;
+        }
+        try {
+
+            selectedGenre.setName(tfNameGenre.getText().trim());
+
+            repository.updateGenre(selectedGenre.getId(), selectedGenre);
+
+            GenreModel.setGenres(repository.readGenres());
+
+            clearGenreForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnUpdateGenreActionPerformed
+
+    private void btnDeleteGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteGenreActionPerformed
+        if (selectedGenre == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+
+        try {
+
+            repository.deleteGenre(selectedGenre.getId());
+
+            GenreModel.setGenres(repository.readGenres());
+
+            clearGenreForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnDeleteGenreActionPerformed
+
+    private void btnUpdateDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDirectorActionPerformed
+        if (selectedDirector == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+        if (!formActorValid()) {
+            return;
+        }
+        try {
+
+            selectedDirector.setFirstName(tfFirstNameDirector.getText().trim());
+            selectedDirector.setLastName(tfLastNameDirector.getText().trim());
+
+            repository.updateDirector(selectedDirector.getId(), selectedDirector);
+
+            DirectorModel.setDirectors(repository.readDirectors());
+
+            clearDirectorForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnUpdateDirectorActionPerformed
+
+    private void btnDeleteDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDirectorActionPerformed
+        if (selectedDirector == null) {
+            MessageUtils.showInformationMessage("Info", "Plese select article");
+            return;
+        }
+
+        try {
+
+            repository.deleteDirector(selectedDirector.getId());
+
+            DirectorModel.setDirectors(repository.readDirectors());
+
+            clearDirectorForm();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnDeleteDirectorActionPerformed
 
 
     private void initValidation() {
