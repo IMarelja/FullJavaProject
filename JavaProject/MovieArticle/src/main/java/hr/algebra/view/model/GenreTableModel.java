@@ -24,7 +24,7 @@ public class GenreTableModel extends AbstractTableModel{
         this.genres = genres;
     }
 
-    public void setGenres(List<Genre> actors) {
+    public void setGenres(List<Genre> genres) {
         this.genres = genres;
         fireTableDataChanged();
     }

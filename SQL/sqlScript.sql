@@ -84,8 +84,9 @@ CREATE PROCEDURE GetUserByUsername
     @Username NVARCHAR(50)
 AS
 BEGIN
-    SELECT Usery.ID, Usery.Username, Usery.Password, Usery.RoleID
+    SELECT Usery.ID, Usery.Username, Usery.Password, Roles.RoleName
     FROM [User] Usery
+	JOIN Roles ON Usery.RoleID = Roles.ID
     WHERE Usery.Username = @Username
 END
 GO
@@ -105,7 +106,9 @@ BEGIN
         RAISERROR('Invalid RoleName', 16, 1);
         RETURN;
     END
-    EXEC CreateUser @Username, @Password, @RoleID, @ID;
+    INSERT INTO [User] (Username, Password, RoleID)
+    VALUES (@Username, @Password, @RoleID);
+	SET @ID = SCOPE_IDENTITY();
 END
 GO
 

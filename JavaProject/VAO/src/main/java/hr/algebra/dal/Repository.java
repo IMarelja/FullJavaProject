@@ -56,6 +56,7 @@ public interface Repository {
 
    Optional<User> getUserByUsername(String username) throws Exception;
    int createUser(User user) throws Exception;
+   boolean authenticateUser(String username, char[] password) throws Exception;
    
    void DeleteAllDataExceptUsers() throws Exception;
 }

@@ -456,7 +456,7 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
     }//GEN-LAST:event_tbDirectorMouseClicked
 
     private void btnAddGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddGenreActionPerformed
-        if (!formActorValid()) {
+        if (!formGenreValid()) {
             return;
         }
         try {
@@ -478,7 +478,7 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAddGenreActionPerformed
 
     private void btnAddDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectorActionPerformed
-        if (!formActorValid()) {
+        if (!formDirectorValid()) {
             return;
         }
         try {
@@ -548,7 +548,7 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
             MessageUtils.showInformationMessage("Info", "Plese select article");
             return;
         }
-        if (!formActorValid()) {
+        if (!formGenreValid()) {
             return;
         }
         try {
@@ -590,7 +590,7 @@ public class UploadGenreActorDirector extends javax.swing.JPanel {
             MessageUtils.showInformationMessage("Info", "Plese select article");
             return;
         }
-        if (!formActorValid()) {
+        if (!formDirectorValid()) {
             return;
         }
         try {

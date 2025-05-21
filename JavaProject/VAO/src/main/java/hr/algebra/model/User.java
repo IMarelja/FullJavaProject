@@ -11,22 +11,27 @@ package hr.algebra.model;
 public final class User {
     private int id;
     private String username;
-    private String passwordHash;
+    private char[] passwordHash;
     private String rolename;
 
     public User() {}
 
-    public User(int id, String username, String passwordHash, String rolename) {
+    public User(int id, String username, char[] passwordHash, String rolename) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.rolename = rolename;
     }
 
-    public User(String username, String passwordHash, String rolename) {
+    public User(String username, char[] passwordHash, String rolename) {
         this.username = username;
         this.passwordHash = passwordHash;
         this.rolename = rolename;
+    }
+    
+    public User(String username, char[] passwordHash) {
+        this.username = username;
+        this.passwordHash = passwordHash;
     }
     
     public int getId() {
@@ -37,7 +42,7 @@ public final class User {
         return username;
     }
 
-    public String getPasswordHash() {
+    public char[] getPasswordHash() {
         return passwordHash;
     }
 
@@ -53,7 +58,7 @@ public final class User {
         this.username = username;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    public void setPasswordHash(char[] passwordHash) {
         this.passwordHash = passwordHash;
     }
 

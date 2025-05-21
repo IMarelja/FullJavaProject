@@ -4,6 +4,8 @@
  */
 package hr.algebra;
 
+import hr.algebra.model.User;
+import hr.algebra.view.DeleteDatabaseAndUploadRssParse;
 import hr.algebra.view.UploadGenreActorDirector;
 import hr.algebra.view.UploadMovie;
 
@@ -12,11 +14,14 @@ import hr.algebra.view.UploadMovie;
  * @author windsten
  */
 public class MovieArticle extends javax.swing.JFrame {
-
+    
+    private User loggedInUser;
     /**
      * Creates new form MovieArticle
      */
-    public MovieArticle() {
+    public MovieArticle(User user) {
+        this.loggedInUser = user;
+        
         initComponents();
         initPanels();
     }
@@ -51,38 +56,6 @@ public class MovieArticle extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MovieArticle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MovieArticle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MovieArticle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MovieArticle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MovieArticle().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane tpContent;
@@ -90,11 +63,18 @@ public class MovieArticle extends javax.swing.JFrame {
 
     private static final String UPLOAD_MOVIE = "Upload movie";
     private static final String UPLOAD_ACTORDIRECTORGENRE = "Upload Actor, Genre and Directors";
+    private static final String ADMIN_CONTROLS = "Admin controls";
     
     
     private void initPanels() {
-        tpContent.add(UPLOAD_MOVIE, new UploadMovie());
-        tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
-        
+        if ("User".equalsIgnoreCase(loggedInUser.getRoleName())) {
+            tpContent.add(UPLOAD_MOVIE, new UploadMovie());
+            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
+        }
+        if ("Admin".equalsIgnoreCase(loggedInUser.getRoleName())) {
+            tpContent.add(UPLOAD_MOVIE, new UploadMovie());
+            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
+            tpContent.add(ADMIN_CONTROLS, new DeleteDatabaseAndUploadRssParse());
+        }
     }
 }

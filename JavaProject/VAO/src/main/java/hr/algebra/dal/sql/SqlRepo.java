@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -699,48 +700,81 @@ public class SqlRepo implements Repository{
 
     private static final String GETUSERBYUSERNAME = "{CALL GetUserByUsername(?)}";
     private static final String CREATEUSER = "{CALL CreateUser(?, ?, ?, ?)}";
-    
-    public Optional<User> getUserByUsername(String username) throws Exception{
+
+    public Optional<User> getUserByUsername(String username) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection(); 
-                CallableStatement stmt = con.prepareCall(GETUSERBYUSERNAME)) {
-           
-            stmt.setString(USERNAMEUSER, username);
-            try(ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = dataSource.getConnection();
+             CallableStatement stmt = con.prepareCall(GETUSERBYUSERNAME)) {
+
+            stmt.setString(1, username);
+
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    String passwordStr = rs.getString(PASSWORDUSER);
+                    char[] passwordHash = passwordStr != null ? passwordStr.toCharArray() : null;
+
                     return Optional.of(
                             new User(
-                                    rs.getInt(IDUSER), 
-                                    rs.getString(USERNAMEUSER), 
-                                    rs.getString(PASSWORDUSER),
+                                    rs.getInt(IDUSER),
+                                    rs.getString(USERNAMEUSER),
+                                    passwordHash,
                                     rs.getString(ROLENAMEUSER)
-                                )
+                            )
                     );
                 }
             }
-            
+        }
 
-        }    
-        
         return Optional.empty();
     }
-    
 
-    public int createUser(User user) throws Exception{
+    public int createUser(User user) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
              CallableStatement stmt = con.prepareCall(CREATEUSER)) {
 
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPasswordHash());
+
+            // Hash the password before saving to DB
+            char[] password = user.getPasswordHash();
+            char[] hashedPassword = PasswordUtils.hashPassword(password);
+            stmt.setString(2, new String(hashedPassword));
+
             stmt.setString(3, user.getRoleName());
             stmt.registerOutParameter(4, java.sql.Types.INTEGER);
 
             stmt.executeUpdate();
-            return stmt.getInt(4);
+            int generatedId = stmt.getInt(4);
+
+            // CLEAN UP
+            Arrays.fill(password, '0');
+            Arrays.fill(hashedPassword, '0');
+
+            return generatedId;
         }
-        
     }
+
+    // Authenticates a user by hashing the input password and comparing it to DB hash
+    public boolean authenticateUser(String username, char[] password) throws Exception {
+        Optional<User> optionalUser = getUserByUsername(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // Hash input password
+            char[] hashedInput = PasswordUtils.hashPassword(password);
+
+            boolean matches = Arrays.equals(hashedInput, user.getPasswordHash());
+
+            // Clean up sensitive data
+            Arrays.fill(password, '0');
+            Arrays.fill(hashedInput, '0');
+
+            return matches;
+        }
+
+        return false;
+    }
+
     
     private static final String DELETEALLDATAEXCEPTUSERS = "{CALL DeleteAllDataExceptUsers()}";
 
@@ -753,7 +787,7 @@ public class SqlRepo implements Repository{
         }
     }
     
-
+    
     
     
     
