@@ -76,5 +76,8 @@ public class MovieArticle extends javax.swing.JFrame {
             tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
             tpContent.add(ADMIN_CONTROLS, new DeleteDatabaseAndUploadRssParse());
         }
+        
+        
     }
+
 }

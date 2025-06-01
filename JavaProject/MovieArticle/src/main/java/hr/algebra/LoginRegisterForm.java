@@ -221,12 +221,11 @@ public class LoginRegisterForm extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(jLabel6))
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(pfPasswordLogin, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(lbPasswordLoginError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pfPasswordRegister, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(lbPasswordRegisterError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbPasswordLoginError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pfPasswordRegister)
+                            .addComponent(lbPasswordRegisterError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pfPasswordLogin))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbIncorrectUsernameOrPassword)
@@ -266,7 +265,7 @@ public class LoginRegisterForm extends javax.swing.JFrame {
                 }
             }else{
                 lbIncorrectUsernameOrPassword.setVisible(true);
-                return;
+                emptyLoginFields();
             }
             
         }   catch (Exception e) {
@@ -374,6 +373,7 @@ public class LoginRegisterForm extends javax.swing.JFrame {
     }
     
     private void emptyRegisterFields(){
+        cbAdmin.setState(false);
         validationRegisterFields.forEach(e -> e.setText(""));
     }
     

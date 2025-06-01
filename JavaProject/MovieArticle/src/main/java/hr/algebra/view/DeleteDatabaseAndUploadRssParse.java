@@ -4,17 +4,28 @@
  */
 package hr.algebra.view;
 
+import static hr.algebra.LoginRegisterForm.loggedInUser;
+import hr.algebra.MovieArticle;
+import hr.algebra.dal.RepoFactory;
+import hr.algebra.dal.Repository;
+import hr.algebra.utilities.MessageUtils;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author windsten
  */
 public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
 
+    private Repository repository;
+    
     /**
      * Creates new form DeleteDatabaseAndUploadRssParse
      */
     public DeleteDatabaseAndUploadRssParse() {
         initComponents();
+        init();
     }
 
     /**
@@ -42,8 +53,12 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
         });
 
         jLabel1.setText("RSS Import to Movie Database");
+        jLabel1.setEnabled(false);
 
         jLabel2.setText("URL");
+        jLabel2.setEnabled(false);
+
+        tfRssUrl.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -76,7 +91,18 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnWipeEverythingMovieDatabaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWipeEverythingMovieDatabaseActionPerformed
-        
+        try{
+            repository.DeleteAllDataExceptUsers();
+            JOptionPane.showMessageDialog(null, "The database was wiped (except users)");
+            
+            MovieArticle movieArticle = new MovieArticle(loggedInUser);
+            movieArticle.setVisible(true);
+            
+            SwingUtilities.windowForComponent(this).dispose();
+        }   catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnWipeEverythingMovieDatabaseActionPerformed
 
 
@@ -86,4 +112,22 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField tfRssUrl;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        try {
+            initValidation();
+            initRepository();
+        } catch (Exception ex) {
+            MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate the form");
+            System.exit(1);
+        }
+    }
+
+    private void initValidation() {
+        return;
+    }
+    
+    private void initRepository() throws Exception {
+        repository = RepoFactory.getRepository();
+    }
 }
