@@ -523,7 +523,7 @@ BEGIN
     DELETE FROM Movie_Actor;
     DELETE FROM Movie_Director;
     DELETE FROM Movie_Genre;
-
+	DELETE FROM [User];
     DELETE FROM Movie;
     DELETE FROM Actor;
     DELETE FROM Director;

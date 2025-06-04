@@ -8,6 +8,7 @@ import hr.algebra.model.User;
 import hr.algebra.view.DeleteDatabaseAndUploadRssParse;
 import hr.algebra.view.UploadGenreActorDirector;
 import hr.algebra.view.UploadMovie;
+import javax.swing.JMenuItem;
 
 /**
  *
@@ -36,8 +37,24 @@ public class MovieArticle extends javax.swing.JFrame {
     private void initComponents() {
 
         tpContent = new javax.swing.JTabbedPane();
+        mbMovieArticle = new javax.swing.JMenuBar();
+        moNavigation = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        moNavigation.setText("Navigation");
+        moNavigation.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+                moNavigationMenuKeyPressed(evt);
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        mbMovieArticle.add(moNavigation);
+
+        setJMenuBar(mbMovieArticle);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -47,17 +64,23 @@ public class MovieArticle extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
+            .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void moNavigationMenuKeyPressed(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_moNavigationMenuKeyPressed
+
+    }//GEN-LAST:event_moNavigationMenuKeyPressed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar mbMovieArticle;
+    private javax.swing.JMenu moNavigation;
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
 
@@ -70,11 +93,61 @@ public class MovieArticle extends javax.swing.JFrame {
         if ("User".equalsIgnoreCase(loggedInUser.getRoleName())) {
             tpContent.add(UPLOAD_MOVIE, new UploadMovie());
             tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
+            
+            JMenuItem uploadMovieItem = new JMenuItem(UPLOAD_MOVIE);
+            uploadMovieItem.addActionListener(e -> {
+                int index = tpContent.indexOfTab(UPLOAD_MOVIE);
+                if (index != -1) {
+                    tpContent.setSelectedIndex(index);
+                }
+            });
+
+            JMenuItem uploadActorItem = new JMenuItem(UPLOAD_ACTORDIRECTORGENRE);
+            uploadActorItem = new JMenuItem(UPLOAD_ACTORDIRECTORGENRE);
+            uploadActorItem.addActionListener(e -> {
+                int index = tpContent.indexOfTab(UPLOAD_ACTORDIRECTORGENRE);
+                if (index != -1) {
+                    tpContent.setSelectedIndex(index);
+                }
+            });
+
+            moNavigation.add(uploadMovieItem);
+            moNavigation.add(uploadActorItem);
+
         }
         if ("Admin".equalsIgnoreCase(loggedInUser.getRoleName())) {
             tpContent.add(UPLOAD_MOVIE, new UploadMovie());
             tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
             tpContent.add(ADMIN_CONTROLS, new DeleteDatabaseAndUploadRssParse());
+            
+            JMenuItem uploadMovieItem = new JMenuItem(UPLOAD_MOVIE);
+            uploadMovieItem.addActionListener(e -> {
+                int index = tpContent.indexOfTab(UPLOAD_MOVIE);
+                if (index != -1) {
+                    tpContent.setSelectedIndex(index);
+                }
+            });
+
+            JMenuItem uploadActorItem = new JMenuItem(UPLOAD_ACTORDIRECTORGENRE);
+            uploadActorItem.addActionListener(e -> {
+                int index = tpContent.indexOfTab(UPLOAD_ACTORDIRECTORGENRE);
+                if (index != -1) {
+                    tpContent.setSelectedIndex(index);
+                }
+            });
+
+            JMenuItem deleteDatabaseItem = new JMenuItem(ADMIN_CONTROLS);
+            deleteDatabaseItem.addActionListener(e -> {
+                int index = tpContent.indexOfTab(ADMIN_CONTROLS);
+                if (index != -1) {
+                    tpContent.setSelectedIndex(index);
+                }
+            });
+
+            moNavigation.add(uploadMovieItem);
+            moNavigation.add(uploadActorItem);
+            moNavigation.add(deleteDatabaseItem);
+
         }
         
         

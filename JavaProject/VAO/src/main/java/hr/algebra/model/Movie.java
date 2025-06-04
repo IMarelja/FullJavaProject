@@ -22,10 +22,10 @@ public final class Movie {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
     
     private int id;
-    private String title;
-    private String picturePath;
-    private String description;
-    private LocalDate releaseDate;
+    private String title; //<title>
+    private String picturePath; //<description> inside <a><img></a> (downloaded)
+    private String description; //<description>
+    private LocalDate releaseDate; // <pubDate> converted to BASIC_ISO_DATE
     
     
     private List<Director> directors = new ArrayList<>();

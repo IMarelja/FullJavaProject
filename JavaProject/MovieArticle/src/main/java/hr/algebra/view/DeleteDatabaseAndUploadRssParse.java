@@ -4,13 +4,39 @@
  */
 package hr.algebra.view;
 
+import com.apptasticsoftware.rssreader.Item;
+import com.apptasticsoftware.rssreader.RssReader;
 import static hr.algebra.LoginRegisterForm.loggedInUser;
 import hr.algebra.MovieArticle;
+import java.net.URL;
 import hr.algebra.dal.RepoFactory;
 import hr.algebra.dal.Repository;
+import hr.algebra.model.Movie;
 import hr.algebra.utilities.MessageUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -19,6 +45,8 @@ import javax.swing.SwingUtilities;
 public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
 
     private Repository repository;
+    private List<JTextComponent> validationFields;
+    private List<JLabel> errorLabels;
     
     /**
      * Creates new form DeleteDatabaseAndUploadRssParse
@@ -39,8 +67,10 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
 
         btnWipeEverythingMovieDatabase = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        btnFetch = new javax.swing.JButton();
         tfRssUrl = new javax.swing.JTextField();
+        lbRssUrlNoDataError = new javax.swing.JLabel();
+        lbRssUrlError = new javax.swing.JLabel();
 
         btnWipeEverythingMovieDatabase.setBackground(new java.awt.Color(255, 0, 0));
         btnWipeEverythingMovieDatabase.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
@@ -52,13 +82,20 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("RSS Import to Movie Database");
-        jLabel1.setEnabled(false);
+        jLabel1.setText("JustWatch (extracted from openrss.org) RSS feed Import to Movie Database");
 
-        jLabel2.setText("URL");
-        jLabel2.setEnabled(false);
+        btnFetch.setText("Fetch");
+        btnFetch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFetchActionPerformed(evt);
+            }
+        });
 
-        tfRssUrl.setEnabled(false);
+        lbRssUrlNoDataError.setForeground(new java.awt.Color(204, 204, 0));
+        lbRssUrlNoDataError.setText("No data have been retreated from this URL");
+
+        lbRssUrlError.setForeground(new java.awt.Color(255, 51, 51));
+        lbRssUrlError.setText("X");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -67,13 +104,20 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbRssUrlNoDataError)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfRssUrl, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel1)
-                    .addComponent(btnWipeEverythingMovieDatabase))
-                .addContainerGap(389, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(90, 90, 90))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(tfRssUrl, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnFetch)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addComponent(lbRssUrlError))
+                    .addComponent(btnWipeEverythingMovieDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 855, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -82,11 +126,14 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
                 .addComponent(btnWipeEverythingMovieDatabase, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(54, 54, 54)
                 .addComponent(jLabel1)
-                .addGap(15, 15, 15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnFetch)
                     .addComponent(tfRssUrl, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addContainerGap(340, Short.MAX_VALUE))
+                    .addComponent(lbRssUrlError))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbRssUrlNoDataError)
+                .addContainerGap(326, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -105,11 +152,49 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnWipeEverythingMovieDatabaseActionPerformed
 
+    private void btnFetchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFetchActionPerformed
+        if(!formValid()){
+            return;
+        }else{
+            List<Movie> RSSMovies = GetMoviesFromRSSfeed(tfRssUrl.getText());
+            if(!(RSSMovies.isEmpty() || RSSMovies == null)){
+                try{
+                    for(Movie movie : RSSMovies){
+                        repository.createMovie(movie);
+                    }
+                    JOptionPane.showMessageDialog(null, 
+                        "Data has been successfully entered into the database!", 
+                        "Success", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    clearForm();
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                    try {
+                        for (Movie oldMovie : RSSMovies) {
+                            if (Files.exists(Paths.get(oldMovie.getPicturePath()))) {
+                                Files.deleteIfExists(Paths.get(oldMovie.getPicturePath()));
+                            }
+                        }
+                    } catch (Exception e) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                
+            }else{
+                lbRssUrlNoDataError.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_btnFetchActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnFetch;
     private javax.swing.JButton btnWipeEverythingMovieDatabase;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel lbRssUrlError;
+    private javax.swing.JLabel lbRssUrlNoDataError;
     private javax.swing.JTextField tfRssUrl;
     // End of variables declaration//GEN-END:variables
 
@@ -117,6 +202,7 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
         try {
             initValidation();
             initRepository();
+            hideErrors();
         } catch (Exception ex) {
             MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate the form");
             System.exit(1);
@@ -124,10 +210,197 @@ public class DeleteDatabaseAndUploadRssParse extends javax.swing.JPanel {
     }
 
     private void initValidation() {
-        return;
+        validationFields = Arrays.asList(
+                tfRssUrl
+        );
+        errorLabels = Arrays.asList(
+                lbRssUrlError,
+                lbRssUrlNoDataError
+        );
     }
     
     private void initRepository() throws Exception {
         repository = RepoFactory.getRepository();
     }
+    
+    private List<Movie> GetMoviesFromRSSfeed(String Url){
+        List<Movie> RSSMovies = new ArrayList<>();
+        String xmlFileLocation = "feed.xml";
+        Path xmlPathFileLocation = Paths.get(xmlFileLocation);
+        
+        //ProgressDialog progressDialog = new ProgressDialog(null, "Downloading RSS Feed", 11);
+        //progressDialog.openDialog();
+        
+        try {
+            //progressDialog.updateProgress("Creating URL object...");
+            URL url = new URL(Url);
+            
+            //progressDialog.updateProgress("Opening connection...");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            //progressDialog.updateProgress("Configuring redirect handling...");
+            connection.setInstanceFollowRedirects(true);
+
+            //progressDialog.updateProgress("Setting request method...");
+            connection.setRequestMethod("GET");
+
+            //progressDialog.updateProgress("Establishing connection...");
+            InputStream inputStream = connection.getInputStream();
+
+            //progressDialog.updateProgress("Creating output file...");
+            FileOutputStream outputStream = new FileOutputStream(xmlFileLocation);
+            
+            //progressDialog.updateProgress("Downloading data...");
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            
+            inputStream.close();
+            outputStream.close();
+            connection.disconnect();
+        
+        }catch(Exception ex){
+            ex.printStackTrace();
+                SwingUtilities.invokeLater(() -> {
+                    JOptionPane.showMessageDialog(null, 
+                        "An unexpected error occurred!\n" + ex.getMessage(), 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                });
+            try {
+                Files.deleteIfExists(xmlPathFileLocation);
+            } catch (Exception e) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }
+            return null;
+        }
+        
+        try{
+            InputStream rssInputStream = new FileInputStream(xmlFileLocation);
+            List<Item> items = new RssReader().read(rssInputStream)
+                                  .toList();
+            
+            // Build a string with all items
+            StringBuilder message = new StringBuilder();
+            for (Item item : items) {
+                if(item.getTitle().isEmpty()){
+                    continue;
+                }
+                String title = item.getTitle().orElseThrow();
+                if(item.getDescription().isEmpty()){
+                    continue;
+                }
+                String description = extractDescription(item.getDescription().orElseThrow());
+                String picturePath = downloadImage(item.getDescription().orElseThrow());
+                if(item.getPubDate().isEmpty()){
+                    continue;
+                }
+                LocalDate publishingDate = LocalDate.parse(convertToBasicIsoDate(item.getPubDate().orElseThrow()), Movie.DATE_FORMATTER);
+                
+                RSSMovies.add( new Movie(
+                                title, //<title> convert from Optional<String> to String
+                                picturePath, 
+                                description, //Content in <description>
+                                publishingDate // <pubDate> converted to 
+                        )
+                );
+                
+                
+            }
+            
+            Files.deleteIfExists(xmlPathFileLocation);
+            
+        }catch(Exception ex){
+            ex.printStackTrace();
+            SwingUtilities.invokeLater(() -> {
+                JOptionPane.showMessageDialog(null, 
+                    "An unexpected error occurred!\n" + ex.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            });
+            try {
+                for (Movie oldMovie : RSSMovies) {
+                    if (Files.exists(Paths.get(oldMovie.getPicturePath()))) {
+                        Files.deleteIfExists(Paths.get(oldMovie.getPicturePath()));
+                    }
+                }
+                Files.deleteIfExists(xmlPathFileLocation);
+            } catch (Exception e) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null,"An unexpected error occurred!\n" + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+            }
+            
+            return null;
+        }
+
+        //progressDialog.setVisible(false);
+        //progressDialog.closeDialog();
+        
+        return RSSMovies;
+    }
+    
+
+    public static String extractDescription(String input) {
+        // This regex matches <a>...</a> and captures everything after it as the description
+        String regex = "</a>(.*)";
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+        return matcher.find() ? matcher.group(1).trim() : "";
+    }
+    
+    private static final String DIR = "assets";
+    
+    public static String downloadImage(String input) throws IOException {
+        // Extract src URL from <img src="...">
+        String regex = "<img\\s+src\\s*=\\s*\"([^\"]+)\"";
+        Matcher matcher = Pattern.compile(regex).matcher(input);
+
+        if (!matcher.find()) {
+            throw new IllegalArgumentException("Image URL not found");
+        }
+
+        String imageUrl = matcher.group(1);
+        String ext = imageUrl.substring(imageUrl.lastIndexOf("."));
+        String name = UUID.randomUUID().toString() + ext;
+        String picturePath = DIR + File.separator + name;
+
+        try (InputStream in = new URL(imageUrl).openStream()) {
+            Files.copy(in, Paths.get(picturePath), StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        return picturePath;
+    }
+    
+    public static String convertToBasicIsoDate(String rfcDate) {
+        DateTimeFormatter rfcFormatter = DateTimeFormatter.RFC_1123_DATE_TIME.withLocale(Locale.ENGLISH);
+        DateTimeFormatter isoFormatter = DateTimeFormatter.BASIC_ISO_DATE;
+
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(rfcDate, rfcFormatter);
+        return isoFormatter.format(zonedDateTime);
+    }
+
+    private boolean formValid() {
+        hideErrors();
+        boolean ok = true;
+        
+        for(int i = 0; i < validationFields.size(); ++i){
+            ok &= !validationFields.get(i).getText().trim().isEmpty();
+            errorLabels.get(i).setVisible(validationFields.get(i).getText().trim().isEmpty());
+        }
+        return ok;
+    }
+
+    private void hideErrors() {
+        errorLabels.forEach(e -> e.setVisible(false));
+    }
+
+    private void clearForm(){
+        hideErrors();
+        validationFields.forEach(e -> e.setText(""));
+    }
+
+
 }
+
+    
+
