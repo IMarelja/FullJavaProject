@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hr.algebra.view.model;
+package hr.algebra.view.model.table;
 
 import hr.algebra.model.Actor;
-import hr.algebra.model.Genre;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
@@ -14,18 +13,18 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author dnlbe
  */
-public class GenreTableModel extends AbstractTableModel{
+public class ActorTableModel extends AbstractTableModel{
     
-    private static final String[] COLUMN_NAMES = {"Id", "Name"};
+    private static final String[] COLUMN_NAMES = {"Id", "Firstname", "Lastname"};
 
-    private List<Genre> genres;
+    private List<Actor> actors;
 
-    public GenreTableModel(List<Genre> genres) {
-        this.genres = genres;
+    public ActorTableModel(List<Actor> actors) {
+        this.actors = actors;
     }
 
-    public void setGenres(List<Genre> genres) {
-        this.genres = genres;
+    public void setActors(List<Actor> actors) {
+        this.actors = actors;
         fireTableDataChanged();
     }
     
@@ -33,7 +32,7 @@ public class GenreTableModel extends AbstractTableModel{
 
     @Override
     public int getRowCount() {
-        return genres.size();
+        return actors.size();
     }
 
     @Override
@@ -63,9 +62,11 @@ public class GenreTableModel extends AbstractTableModel{
     public Object getValueAt(int rowIndex, int columnIndex) {
         switch (columnIndex) {
             case 0:
-                return genres.get(rowIndex).getId();
+                return actors.get(rowIndex).getId();
             case 1:
-                return genres.get(rowIndex).getName();
+                return actors.get(rowIndex).getFirstName();
+            case 2:
+                return actors.get(rowIndex).getLastName();
             default:
                 throw new AssertionError();
         }

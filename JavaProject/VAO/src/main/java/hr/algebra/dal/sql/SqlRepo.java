@@ -465,7 +465,7 @@ public class SqlRepo implements Repository{
 
             stmt.setInt(1, movieId);
             stmt.setInt(2, actorId);
-
+            
             stmt.executeUpdate();
         }
     }
@@ -602,7 +602,7 @@ public class SqlRepo implements Repository{
     public void removeDirectorFromMovie(int movieId, int directorId) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(READ_DIRECTORS_FROM_MOVIE)) {
+             CallableStatement stmt = con.prepareCall(REMOVE_DIRECTOR_FROM_MOVIE)) {
 
             stmt.setInt(1, movieId);
             stmt.setInt(2, directorId);

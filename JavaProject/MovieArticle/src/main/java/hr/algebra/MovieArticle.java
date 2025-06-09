@@ -9,6 +9,7 @@ import hr.algebra.view.DeleteDatabaseAndUploadRssParse;
 import hr.algebra.view.UploadGenreActorDirector;
 import hr.algebra.view.UploadMovie;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 /**
  *
@@ -88,11 +89,15 @@ public class MovieArticle extends javax.swing.JFrame {
     private static final String UPLOAD_ACTORDIRECTORGENRE = "Upload Actor, Genre and Directors";
     private static final String ADMIN_CONTROLS = "Admin controls";
     
+    private static final JPanel UPLOAD_MOVIE_PANEL = new UploadMovie();
+    private static final JPanel UPLOAD_GENREACTORDIRECTOR_PANEL = new UploadGenreActorDirector();
+    private static final JPanel ADMIN_CONTROLS_PANEL = new DeleteDatabaseAndUploadRssParse();
+    
     
     private void initPanels() {
         if ("User".equalsIgnoreCase(loggedInUser.getRoleName())) {
-            tpContent.add(UPLOAD_MOVIE, new UploadMovie());
-            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
+            tpContent.add(UPLOAD_MOVIE, UPLOAD_MOVIE_PANEL);
+            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, UPLOAD_GENREACTORDIRECTOR_PANEL);
             
             JMenuItem uploadMovieItem = new JMenuItem(UPLOAD_MOVIE);
             uploadMovieItem.addActionListener(e -> {
@@ -116,9 +121,9 @@ public class MovieArticle extends javax.swing.JFrame {
 
         }
         if ("Admin".equalsIgnoreCase(loggedInUser.getRoleName())) {
-            tpContent.add(UPLOAD_MOVIE, new UploadMovie());
-            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, new UploadGenreActorDirector());
-            tpContent.add(ADMIN_CONTROLS, new DeleteDatabaseAndUploadRssParse());
+            tpContent.add(UPLOAD_MOVIE, UPLOAD_MOVIE_PANEL);
+            tpContent.add(UPLOAD_ACTORDIRECTORGENRE, UPLOAD_GENREACTORDIRECTOR_PANEL);
+            tpContent.add(ADMIN_CONTROLS, ADMIN_CONTROLS_PANEL);
             
             JMenuItem uploadMovieItem = new JMenuItem(UPLOAD_MOVIE);
             uploadMovieItem.addActionListener(e -> {

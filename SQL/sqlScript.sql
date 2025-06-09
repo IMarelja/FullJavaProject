@@ -402,7 +402,7 @@ BEGIN
 END
 GO
 
--- Remove Actor from Movie
+-- Delete Actor from Movie
 CREATE PROCEDURE DeleteActorFromMovie
     @MovieID INT,
     @ActorID INT
@@ -412,6 +412,7 @@ BEGIN
     WHERE MovieID = @MovieID AND ActorID = @ActorID;
 END
 GO
+
 
 -- ============================
 -- Movie-Director Relationship CRUD
@@ -495,7 +496,7 @@ CREATE PROCEDURE ReadMoviesFromGenre
     @GenreID INT
 AS
 BEGIN
-    SELECT m.ID, m.Title, m.PicturePath, m.Description, m.ReleaseDate
+    SELECT  m.ID, m.Title, m.PicturePath, m.Description, m.ReleaseDate
     FROM Movie m
     INNER JOIN Movie_Genre mg ON m.ID = mg.MovieID
     WHERE mg.GenreID = @GenreID;

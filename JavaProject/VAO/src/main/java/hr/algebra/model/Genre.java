@@ -9,6 +9,8 @@ package hr.algebra.model;
  * @author windsten
  */
 public final class Genre {
+
+    
     private int id;
     private String name;
 
@@ -43,9 +45,29 @@ public final class Genre {
 
     @Override
     public String toString() {
-        return "Genre{" + "id=" + id + ", name=" + name + '}';
+        return name;
     }
     
-    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 83 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Genre other = (Genre) obj;
+        return this.id == other.id;
+    }
     
 }

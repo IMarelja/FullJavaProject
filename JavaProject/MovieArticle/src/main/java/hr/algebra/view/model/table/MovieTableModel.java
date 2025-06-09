@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hr.algebra.view.model;
+package hr.algebra.view.model.table;
 
 import hr.algebra.model.Movie;
 import java.util.List;
