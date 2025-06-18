@@ -110,6 +110,12 @@ public class UploadMovie extends javax.swing.JPanel {
         taDesc = new javax.swing.JTextPane();
         jToolBarSelectedActorDirectorGenre = new javax.swing.JToolBar();
 
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
+
         jLabel1.setText("Actor");
 
         jLabel2.setText("Director");
@@ -357,8 +363,8 @@ public class UploadMovie extends javax.swing.JPanel {
             MovieModel.setMovies(repository.readMovies());
 
             for(Actor actor : movie.getActors()) repository.createActorFromMovie(movie.getId(), actor.getId());
-            for(Director director : movie.getDirectors()) repository.createActorFromMovie(movie.getId(), director.getId());
-            for(Genre genre : movie.getGenres()) repository.createActorFromMovie(movie.getId(), genre.getId());
+            for(Director director : movie.getDirectors()) repository.createDirectorToMovie(movie.getId(), director.getId());
+            for(Genre genre : movie.getGenres()) repository.createGenreToMovie(movie.getId(), genre.getId());
             
             clearForm();
             
@@ -439,6 +445,10 @@ public class UploadMovie extends javax.swing.JPanel {
     private void tbMoviesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbMoviesKeyReleased
         selectMovie();
     }//GEN-LAST:event_tbMoviesKeyReleased
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        init();
+    }//GEN-LAST:event_formComponentShown
 
 
     private void initValidation() {
